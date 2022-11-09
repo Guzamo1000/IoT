@@ -121,7 +121,7 @@ def login():
             flash("User doesn't exist!", category="error")
             print("login fail")
             return jsonify({"status":"fail"})
-@web.route("/reset/<ID_thungrac>",methods=['POST'])
+@web.route("/reset/{ID_thungrac}",methods=['POST'])
 def reset(ID_thungrac):
     """
     reset weight in bin
