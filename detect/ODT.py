@@ -37,7 +37,7 @@ class ObjectDetection:
         self.colors = np.random.uniform(0, 255, size=(len(self.classes), 3))
 
     def run_detection(self):
-        model=tf.keras.models.load_model(r'D:\PTIT\IoT\d\project\detect\model_mobinetv2.h5') # model h5
+        model=tf.keras.models.load_model(r'D:\PTIT\IoT\d\project\detect\model_mobinetv2_35_epoch.h5') # model h5
 
         print("Start object detection ...")
 
@@ -76,10 +76,11 @@ class ObjectDetection:
 
                     cv2.rectangle(frame, (x+10,y+5), (w+10,h+5), (255,0,0), 2)
                     face=frame[y+5:h+5, x+15:w+10]
+
                     face = cv2.resize(face,(256,256))
                     face2 = img_to_array(face)
                     face2 = np.expand_dims(face2,axis=0)
-
+                    
                     # faces.append(face2)
                     label=None
                     pred = model.predict(face2)
