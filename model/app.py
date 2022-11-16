@@ -18,7 +18,7 @@ web=Blueprint('web',__name__)
 def home():
     if request.method=='GET':
         cur=mysql.get_db().cursor()
-        cur.execute("select ID_khoangrac,ID_Thungrac,TenNhan,ViTriThungRac, Sum(KhoiLuong) from (select khoangrac.ID_khoangrac, thungrac.ID_Thungrac, TenNhan, ViTriThungRac ,KhoiLuong from ractrongkhoang,khoangrac, thungrac where thungrac.ID_thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac order by thungrac.ID_Thungrac) as T group by TenNhan")
+        cur.execute("select ID_khoangrac,ID_Thungrac,TenNhan,ViTriThungRac,SoLanDo, Sum(KhoiLuong) from (select khoangrac.ID_khoangrac, thungrac.ID_Thungrac, TenNhan, ViTriThungRac ,KhoiLuong,SoLanDo from ractrongkhoang,khoangrac, thungrac where thungrac.ID_thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac order by thungrac.ID_Thungrac) as T group by TenNhan")
         listkhuvuc=cur.fetchall()
         print(listkhuvuc)
         lskhuvuc=[]
@@ -30,7 +30,8 @@ def home():
             dictkhuvuc["ID_Thungrac"]=i[1]
             dictkhuvuc['TenNhan']=i[2]
             dictkhuvuc['ViTriThungRac']=i[3]
-            dictkhuvuc['KhoiLuong']=i[4]
+            dictkhuvuc['SoLanDo']=i[4]
+            dictkhuvuc['KhoiLuong']=i[5]
             lskhuvuc.append(dictkhuvuc)
         print(lskhuvuc)
         # lskhuvuc=set(lskhuvuc)
