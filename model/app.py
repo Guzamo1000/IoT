@@ -18,24 +18,31 @@ web=Blueprint('web',__name__)
 def home():
     if request.method=='GET':
         cur=mysql.get_db().cursor()
+        cur.execute("select Id_thungrac,ViTriThungRac from thungrac")
+        listvitri=cur.fetchall()
         cur.execute("select ID_khoangrac,ID_Thungrac,TenNhan,ViTriThungRac,SoLanDo, Sum(KhoiLuong) from (select khoangrac.ID_khoangrac, thungrac.ID_Thungrac, TenNhan, ViTriThungRac ,KhoiLuong,SoLanDo from ractrongkhoang,khoangrac, thungrac where thungrac.ID_thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac order by thungrac.ID_Thungrac) as T group by TenNhan")
-        listkhuvuc=cur.fetchall()
-        print(listkhuvuc)
+        khoangrac=cur.fetchall()
         lskhuvuc=[]
-        listthungrac=set(listkhuvuc[1]) #danh sach id cac thung rac
-        for i in listkhuvuc:
-           
-            dictkhuvuc={}
-            dictkhuvuc["ID_khoangrac"]=i[0]
-            dictkhuvuc["ID_Thungrac"]=i[1]
-            dictkhuvuc['TenNhan']=i[2]
-            dictkhuvuc['ViTriThungRac']=i[3]
-            dictkhuvuc['SoLanDo']=i[4]
-            dictkhuvuc['KhoiLuong']=i[5]
-            lskhuvuc.append(dictkhuvuc)
-        print(lskhuvuc)
+        dict_vitri=[]
+        for id_khoangrac in listvitri:
+            vt={}
+            vt["ID_thungrac"]=id_khoangrac[0]
+            vt["ViTriThungRac"]=id_khoangrac[1]
+            for i in khoangrac:
+                if i[1]==id_khoangrac[0]:
+                    dictkhuvuc={}
+                    dictkhuvuc["ID_khoangrac"]=i[0]
+                    # dictkhuvuc["ID_Thungrac"]=i[1]
+                    dictkhuvuc['TenNhan']=i[2]
+                    # dictkhuvuc['ViTriThungRac']=i[3]
+                    dictkhuvuc['SoLanDo']=i[4]
+                    dictkhuvuc['KhoiLuong']=i[5]
+                    lskhuvuc.append(dictkhuvuc)
+            vt['Khoangrac']=lskhuvuc
+            dict_vitri.append(vt)
+        # print(lskhuvuc)
         # lskhuvuc=set(lskhuvuc)
-        return jsonify({"status":"success","listkhuvuc":lskhuvuc})
+        return jsonify({"status":"success","listkhuvuc":dict_vitri})
     if request.method=='POST':
         location=request.form['location']
         start_time=request.form['start_time']
@@ -46,27 +53,30 @@ def home():
         dir_time={}
         valuetime=db[0][0].strftime("%Y-%d-%m")
         # print(f"valuetime: {valuetime}")
-        ls_time={}
+        ngay=[]
         for i in db:
+            ls_time={}
             tm=i[0].strftime("%Y-%d-%m")
             print(type(i))
             if tm==valuetime:
+                
                 ls_time['NgayRacVao']=tm
                 ls_time['KhoiLuong']=i[1]
                 ls_time['NhanRac']=i[2]
                 ls_time['KhuVuc']=i[3]
-                # print(ls_time)
+                ngay.append(ls_time)
             else: 
-                dir_time[valuetime]=ls_time
-                ls_time={}
+                dir_time[valuetime]=ngay
+                ngay=[]
                 ls_time['NgayRacVao']=tm
                 ls_time['KhoiLuong']=i[1]
                 ls_time['NhanRac']=i[2]
                 ls_time['KhuVuc']=i[3]
+                ngay.append(ls_time)
                 valuetime=tm
                 # print(ls_time)
 
-        dir_time[valuetime]=ls_time
+        dir_time[valuetime]=ngay
         print(dir_time)
         return jsonify({"status":"success","data": dir_time})
 
