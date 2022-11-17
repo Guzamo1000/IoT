@@ -9,7 +9,7 @@ app=Flask(__name__)
 app.config["SECRET_KEY"] = "iot"
 app.config["MYSQL_DATABASE_HOST"]='localhost'
 app.config["MYSQL_DATABASE_USER"]="root"
-app.config["MYSQL_DATABASE_PASSWORD"]="258000"
+app.config["MYSQL_DATABASE_PASSWORD"]="13122001"
 app.config["MYSQL_DATABASE_DB"]='IoT'
 mysql.init_app(app)
 
