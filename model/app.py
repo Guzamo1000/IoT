@@ -9,7 +9,7 @@ import cv2
 import urllib.request
 import numpy as np
 import json
-
+from utils.group import group
 web=Blueprint('web',__name__)
 
 # web.permanent_session_lifetime = timedelta(minutes=1)
@@ -66,6 +66,7 @@ def home():
                 ls_time['KhuVuc']=i[3]
                 ngay.append(ls_time)
             else: 
+                ngay=group(ngay)
                 dir_time[valuetime]=ngay
                 ngay=[]
                 ls_time['NgayRacVao']=tm
