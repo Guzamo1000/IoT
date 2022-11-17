@@ -123,3 +123,45 @@ def reset(id_thungrac,id_khoangrac):
         mysql.get_db().commit()
      
         return jsonify({"Status":"Success"})
+@web.route("/push_from_AI",methods=['POST'])
+def push_data():
+    if request.method=='POST':
+        try:
+            data=request.get_json()
+            id_Thungrac=data['ID_Thungrac']
+            TenNhan=data['TenNhan']
+            AnhRac=data['AnhRac']
+            NgayRacVao=datetime.now()
+
+            directory = str(date.today())
+            directory = str(date.today())
+            # Parent Directory path
+            parent_dir = os.getcwd()
+            # Path
+            path = parent_dir+"\\"+"static"+"\\"+"image"+"\\"+directory
+            try:
+                os.mkdir(path)
+            except:
+                print('Folder exist!')
+
+            # Process base64 string
+            filename = str(datetime.now())
+            specialChars = "!#$%^&*():.- "
+            for specialChar in specialChars:
+                filename = filename.replace(specialChar, '')
+
+            url_save_to_db = "static\\image\\"+directory+"\\"+filename+".jpg"
+            url_img = path+"\\"+filename
+            url_img += '.jpg'
+            with open(url_img, "wb") as f:
+                f.write(base64.b64decode(AnhRac.encode('utf-8')))
+            cur=mysql.get_db().cursor()
+            cur.execute(f"select ID_khoangrac from thungrac, khoangrac where thungrac.ID_thungrac=khoangrac.ID_Thungrac and thungrac.ID_thungrac='{id_Thungrac}' and TenNhan='{TenNhan}'")
+            khoangrac=cur.fetchall()
+            id_khoangrac=khoangrac[0][0]
+            cur.execute(f"NSERT INTO `iot`.`ractrongkhoang` ( `ID_khoangrac`, `AnhRac`, `NgayRacVao`, `KhoiLuong`) VALUES ( '{id_khoangrac}', '{url_save_to_db}', '{NgayRacVao}', '10');")
+            mysql.get_db().commit()
+            return jsonify({"ID_thungrac":id_Thungrac,'ID_khoangrac':id_khoangrac,"AnhRac":AnhRac,"NgayRacVao":NgayRacVao,"TenNhan":TenNhan})
+        except Exception as e:
+            print(e)
+            return jsonify({"status":"failed","msg":str(e)})

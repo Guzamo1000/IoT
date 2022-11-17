@@ -10,12 +10,13 @@ def convert_imgarrtobase64(img_arr):
         return jpg_as_text
     except:
         return None
-def camera_run(id_bin,img, label):
-    api='http://127.0.0.1:5000/post_data_cam'
-    data={"id_bin": id_bin,
-            "label": label
+def camera_run(id_thungrac,AnhRac, TenNhan):
+    api='http://127.0.0.1:5000//push_from_AI'
+    data={"ID_Thungrac": id_thungrac,
+            "TenNhan": AnhRac,
+            "TenNhan":TenNhan
         }
-    base64img=convert_imgarrtobase64(img)
+    base64img=convert_imgarrtobase64(AnhRac)
     if base64img is not None:
         data['img']=base64img
         response=requests.post(api, json=data)

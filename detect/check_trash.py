@@ -13,7 +13,7 @@ import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img , img_to_array
-
+from detect.post_data import *
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 
@@ -31,7 +31,7 @@ model = load_model("D:\PTIT\IoT\d\project\detect\model_mobinetv2_35_epoch.h5")
 #   return pImg
 
 cam=cv2.VideoCapture(0)
-model=tf.keras.models.load_model(r'D:\PTIT\IoT\d\project\detect\model_mobinetv2_35_epoch.h5')
+model=tf.keras.models.load_model(r'C:\Users\Admin\OneDrive\Tài liệu\GitHub\IoT\detect\model_mobinetv2_35_epoch.h5')
 while True:
     ret,frame=cam.read()
     boxes=[[100,100,400,400]]
@@ -62,6 +62,7 @@ while True:
           # print(prediction)
           print(f"label {s}")
           if pro>0.6:
+            camera_run(1,img,s)
           # # faces.append(face2)
           # label=None
           # pred = model.predict(face2)
