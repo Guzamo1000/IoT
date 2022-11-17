@@ -43,10 +43,13 @@ def home():
                     # dictkhuvuc['SoLanDo']=i[4]
                     dictkhuvuc['KhoiLuong']=i[4]
                     lskhuvuc.append(dictkhuvuc)
+                    # lskhuvuc=group_post(lskhuvuc)
+                    # lskhuvuc.append()
                     kt=True
+            print(lskhuvuc)
             if kt==True:
-                newkhuvuc=group_get(lskhuvuc)
-                vt['Khoangrac']=newkhuvuc
+                lskhuvuc=group_get(lskhuvuc)
+                vt['Khoangrac']=lskhuvuc
                 print(lskhuvuc)
             else:
                 vt['Khoangrac']="None"
@@ -59,38 +62,40 @@ def home():
         start_time=request.form['start_time']
         end_time=request.form['end_time']
         cur=mysql.get_db().cursor()
-        cur.execute(f"select NgayRacVao, KhoiLuong, TenNhan, ViTriThungRac from ractrongkhoang ,khoangrac, thungrac where thungrac.ID_thungrac='{location}' and thungrac.ID_Thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by RacTrongKhoang.NgayRacVao")
-        db=cur.fetchall()
-        dir_time={}
-        valuetime=db[0][0].strftime("%Y-%d-%m")
-        # print(f"valuetime: {valuetime}")
-        ngay=[]
-        for i in db:
-            ls_time={}
-            tm=i[0].strftime("%Y-%d-%m")
-            print(type(i))
-            if tm==valuetime:
-                
-                # ls_time['NgayRacVao']=tm
-                ls_time['KhoiLuong']=i[1]
-                ls_time['TenNhan']=i[2]
-                # ls_time['KhuVuc']=i[3]
-                ngay.append(ls_time)
-            else: 
-                ngay=group_post(ngay)
-                dir_time[valuetime]=ngay
-                ngay=[]
-                # ls_time['NgayRacVao']=tm
-                ls_time['KhoiLuong']=i[1]
-                ls_time['TenNhan']=i[2]
-                # ls_time['KhuVuc']=i[3]
-                ngay.append(ls_time)
-                valuetime=tm
-                # print(ls_time)
-        ngay=group_post(ngay)
-        dir_time[valuetime]=ngay
-        print(dir_time)
-        return jsonify({"status":"success","data": dir_time})
+        if start_time and end_time:
+            cur.execute(f"select NgayRacVao, KhoiLuong, TenNhan, ViTriThungRac from ractrongkhoang ,khoangrac, thungrac where thungrac.ID_thungrac='{location}' and thungrac.ID_Thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by RacTrongKhoang.NgayRacVao")
+            db=cur.fetchall()
+            dir_time={}
+            valuetime=db[0][0].strftime("%Y-%d-%m")
+            # print(f"valuetime: {valuetime}")
+            ngay=[]
+            for i in db:
+                ls_time={}
+                tm=i[0].strftime("%Y-%d-%m")
+                print(type(i))
+                if tm==valuetime:
+                    
+                    # ls_time['NgayRacVao']=tm
+                    ls_time['KhoiLuong']=i[1]
+                    ls_time['TenNhan']=i[2]
+                    # ls_time['KhuVuc']=i[3]
+                    ngay.append(ls_time)
+                else: 
+                    ngay=group_post(ngay)
+                    dir_time[valuetime]=ngay
+                    ngay=[]
+                    # ls_time['NgayRacVao']=tm
+                    ls_time['KhoiLuong']=i[1]
+                    ls_time['TenNhan']=i[2]
+                    # ls_time['KhuVuc']=i[3]
+                    ngay.append(ls_time)
+                    valuetime=tm
+                    # print(ls_time)
+            ngay=group_post(ngay)
+            dir_time[valuetime]=ngay
+            print(dir_time)
+            return jsonify({"status":"success","data": dir_time})
+        else: return jsonify({"status":"failed", "mess":"lost date"})
 
 
 
@@ -102,14 +107,19 @@ def reset(id_thungrac,id_khoangrac):
     if request.method=='GET':
         id_thungrac=id_thungrac
         id_khoangrac=id_khoangrac
-        print(SoLanDo)
+        # print(SoLanDo)
         print(id_khoangrac)
         print(id_thungrac)
         cur=mysql.get_db().cursor()
-        cur.execute(f"select * from khoangrac")
-        SoLanDo=cur.fetchall()
-        
-        cur.execute(f"update khoangrac set KhoiLuong=0,SoLanDo='{SoLanDo+1}' where ID_Thungrac='{id_thungrac}' and ID_khoangrac='{id_khoangrac}'")
+        cur.execute(f"select SoLanDo from khoangrac where ID_Thungrac='{id_thungrac}' and ID_khoangrac='{id_khoangrac}'")
+        SoLanDo=cur.fetchall() 
+        sl=SoLanDo[0][0]+1
+        print(sl)
+        lstime=str(datetime.now()).split(" ")
+        time=lstime[0]
+        print(time)
+
+        cur.execute(f"update khoangrac set NgayDoRac='{time}',SoLanDo='{sl}' where ID_Thungrac='{id_thungrac}' and ID_khoangrac='{id_khoangrac}'")
         mysql.get_db().commit()
      
         return jsonify({"Status":"Success"})
