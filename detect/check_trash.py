@@ -13,7 +13,7 @@ import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import load_img , img_to_array
-from detect.post_data import *
+from post_data import *
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 
@@ -29,22 +29,27 @@ model = load_model("D:\PTIT\IoT\d\project\detect\model_mobinetv2_35_epoch.h5")
 #   img_array = np.expand_dims(img_array, axis=0)
 #   pImg = preprocess_input(img_array)
 #   return pImg
+url='http://192.168.31.106/cam-lo.jpg'
 
-cam=cv2.VideoCapture(0)
-model=tf.keras.models.load_model(r'C:\Users\Admin\OneDrive\Tài liệu\GitHub\IoT\detect\model_mobinetv2_35_epoch.h5')
+# cam=cv2.VideoCapture(0)
+model=tf.keras.models.load_model(r'D:\PTIT\IoT\IoT\detect\model_mobinetv2_35_epoch.h5')
 while True:
-    ret,frame=cam.read()
-    boxes=[[100,100,400,400]]
+    # ret,frame=cam.read()
+    img=urllib.request.urlopen(url)
+    img_np= np.array(bytearray(img.read()),dtype=np.uint8)
+    frame=cv2.imdecode(img_np,-1)
+    boxes=[[50,50,100,100]]
     if boxes is not None:
       # print(boxes)
       for (x,y,w,h) in boxes:
           img=frame[y+5:h+5, x+15:w+10]
-          img = cv2.resize(img,(224,224))
+          img = cv2.resize(img,(256,256))
 
           # img = load_img(img_path, target_size=(224, 224))
           img_array = img_to_array(img)
           
           img_array = np.expand_dims(img_array, axis=0)
+          print(img)
           pImg = preprocess_input(img_array)
 
 
@@ -52,17 +57,16 @@ while True:
           # pImg = process_image(img_array)
 
           # make predictions on test image using mobilenet
-          prediction = model.predict(pImg)
-          prediction=prediction[0]
+          # prediction = model.predict(pImg)
+          # prediction=prediction[0]
 
-          predicted_class = np.argmax(prediction[0], axis=-1)
-          pro=prediction[predicted_class]
-          s=str(predicted_class)+"    xsuat"+ str(pro)
-          print(predicted_class)
-          # print(prediction)
-          print(f"label {s}")
-          if pro>0.6:
-            camera_run(1,img,s)
+          # predicted_class = np.argmax(prediction[0], axis=-1)
+          # pro=prediction[predicted_class]
+          # s=str(predicted_class)+"    xsuat"+ str(pro)
+          # print(predicted_class)
+          # # print(prediction)
+          # print(f"label {s}")
+          # if pro>0.6:
           # # faces.append(face2)
           # label=None
           # pred = model.predict(face2)
@@ -80,10 +84,13 @@ while True:
           # filename = str(datetime.now())+'.jpg'
           # with open(filename,"wb") as f:
           #     f.write(base64.b64decode(data['image'].encode('utf-8')))
-            cv2.rectangle(frame, (x+10,y+5), (w+10,h+5), (255,0,0), 2)
-            cv2.putText(frame, s , (x+5, y-15),cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
+          # cv2.rectangle(frame, (x+10,y+5), (w+10,h+5), (255,0,0), 2)
+          # cv2.putText(frame, s , (x+5, y-15),cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
+          camera_run(1,img,0)
+
+      
     cv2.imshow("frame", frame)
     if cv2.waitKey(10) & 0xFF == ord('q'):
             break
-cam.release()
+# cam.release()
 cv2.destroyAllWindows()

@@ -14,11 +14,13 @@ def camera_run(id_thungrac,AnhRac, TenNhan):
     api='http://127.0.0.1:5000//push_from_AI'
     data={"ID_Thungrac": id_thungrac,
             "TenNhan": AnhRac,
-            "TenNhan":TenNhan
+            "TenNhan":TenNhan,
         }
     base64img=convert_imgarrtobase64(AnhRac)
+    # print(base64img)
     if base64img is not None:
-        data['img']=base64img
+        data['AnhRac']=base64img
+        # print(f"data {data}")
         response=requests.post(api, json=data)
         print("Status code: ", response.status_code)
         print("Printing Entire Post Request")

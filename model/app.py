@@ -65,37 +65,48 @@ def home():
         if start_time and end_time:
             cur.execute(f"select NgayRacVao, KhoiLuong, TenNhan, ViTriThungRac from ractrongkhoang ,khoangrac, thungrac where thungrac.ID_thungrac='{location}' and thungrac.ID_Thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by RacTrongKhoang.NgayRacVao")
             db=cur.fetchall()
-            dir_time={}
-            valuetime=db[0][0].strftime("%Y-%d-%m")
-            # print(f"valuetime: {valuetime}")
-            ngay=[]
-            for i in db:
-                ls_time={}
-                tm=i[0].strftime("%Y-%d-%m")
-                print(type(i))
-                if tm==valuetime:
-                    
-                    # ls_time['NgayRacVao']=tm
-                    ls_time['KhoiLuong']=i[1]
-                    ls_time['TenNhan']=i[2]
-                    # ls_time['KhuVuc']=i[3]
-                    ngay.append(ls_time)
-                else: 
-                    ngay=group_post(ngay)
-                    dir_time[valuetime]=ngay
-                    ngay=[]
-                    # ls_time['NgayRacVao']=tm
-                    ls_time['KhoiLuong']=i[1]
-                    ls_time['TenNhan']=i[2]
-                    # ls_time['KhuVuc']=i[3]
-                    ngay.append(ls_time)
-                    valuetime=tm
-                    # print(ls_time)
-            ngay=group_post(ngay)
-            dir_time[valuetime]=ngay
-            print(dir_time)
-            return jsonify({"status":"success","data": dir_time})
-        else: return jsonify({"status":"failed", "mess":"lost date"})
+            if db is not None:
+                dir_time=[]
+                valuetime=db[0][0].strftime("%Y-%d-%m")
+                # print(f"valuetime: {valuetime}")
+                
+                ngay=[]
+                for i in db:
+                    ls_time={}
+                    all_day={}
+                    tm=i[0].strftime("%Y-%d-%m")
+                    print(type(i))
+                    if tm==valuetime:
+                        
+                        # ls_time['NgayRacVao']=tm
+                        ls_time['KhoiLuong']=i[1]
+                        ls_time['TenNhan']=i[2]
+                        # ls_time['KhuVuc']=i[3]
+                        ngay.append(ls_time)
+                    else: 
+                        ngay=group_post(ngay)
+                        
+                        # dir_time[valuetime]=ngay
+                        all_day['Ngay']=valuetime
+                        all_day['Rac']=ngay
+                        dir_time.append(all_day)
+                        ngay=[]
+                        # ls_time['NgayRacVao']=tm
+                        ls_time['KhoiLuong']=i[1]
+                        ls_time['TenNhan']=i[2]
+                        # ls_time['KhuVuc']=i[3]
+                        ngay.append(ls_time)
+                        valuetime=tm
+                        # print(ls_time)
+                ngay=group_post(ngay)
+                
+                all_day['Ngay']=valuetime
+                all_day['Rac']=ngay
+                dir_time.append(all_day)
+                print(dir_time)
+                return jsonify({"status":"success","data": dir_time})
+            else: return jsonify({"status":"failed", "mess":"lost date"})
+        else: return jsonify({"status":"failed","mess":"khong co ngay"})
 
 
 
@@ -138,7 +149,7 @@ def push_data():
             # Parent Directory path
             parent_dir = os.getcwd()
             # Path
-            path = parent_dir+"\\"+"static"+"\\"+"image"+"\\"+directory
+            path = parent_dir+"\\"+"static"+"\\"+"images"+"\\"+directory
             try:
                 os.mkdir(path)
             except:
@@ -150,7 +161,7 @@ def push_data():
             for specialChar in specialChars:
                 filename = filename.replace(specialChar, '')
 
-            url_save_to_db = "static\\image\\"+directory+"\\"+filename+".jpg"
+            url_save_to_db = "static\\images\\"+directory+"\\"+filename+".jpg"
             url_img = path+"\\"+filename
             url_img += '.jpg'
             with open(url_img, "wb") as f:
