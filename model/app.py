@@ -60,23 +60,23 @@ def home():
             print(type(i))
             if tm==valuetime:
                 
-                ls_time['NgayRacVao']=tm
+                # ls_time['NgayRacVao']=tm
                 ls_time['KhoiLuong']=i[1]
                 ls_time['NhanRac']=i[2]
-                ls_time['KhuVuc']=i[3]
+                # ls_time['KhuVuc']=i[3]
                 ngay.append(ls_time)
             else: 
                 ngay=group(ngay)
                 dir_time[valuetime]=ngay
                 ngay=[]
-                ls_time['NgayRacVao']=tm
+                # ls_time['NgayRacVao']=tm
                 ls_time['KhoiLuong']=i[1]
                 ls_time['NhanRac']=i[2]
-                ls_time['KhuVuc']=i[3]
+                # ls_time['KhuVuc']=i[3]
                 ngay.append(ls_time)
                 valuetime=tm
                 # print(ls_time)
-
+        ngay=group(ngay)
         dir_time[valuetime]=ngay
         print(dir_time)
         return jsonify({"status":"success","data": dir_time})
