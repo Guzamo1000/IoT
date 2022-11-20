@@ -47,7 +47,7 @@ while True:
       for (x,y,w,h) in boxes:
           img=frame[y+5:h+5, x+15:w+10]
           img = cv2.resize(img,(256,256))
-          label='box_cardboard_paper'
+          label='organic'
           path='/home/hauuu/Desktop/IoT/detect/dataset/'+label
           time_img=str(datetime.now())
           file_name=path+"/"+time_img+".jpg"

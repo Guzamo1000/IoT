@@ -64,7 +64,7 @@ def home():
         end_time=request.form['end_time']
         cur=mysql.get_db().cursor()
         if start_time and end_time and start_time<end_time:
-            cur.execute(f"select NgayRacVao, KhoiLuong, TenNhan, ViTriThungRac from ractrongkhoang ,khoangrac, thungrac where thungrac.ID_thungrac='{location}' and thungrac.ID_Thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by ractrongkhoang.NgayRacVao")
+            cur.execute(f"select NgayRacVao, KhoiLuong, TenNhan, ViTriThungRac, AnhRac from ractrongkhoang ,khoangrac, thungrac where thungrac.ID_thungrac='{location}' and thungrac.ID_Thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by ractrongkhoang.NgayRacVao")
             db=cur.fetchall()
             if db is not None:
                 dir_time=[]
@@ -78,6 +78,7 @@ def home():
                     if tm==valuetime:
                         ls_time['KhoiLuong']=i[1]
                         ls_time['TenNhan']=i[2]
+                        ls_time["AnhRac"]=i[4]
                         ngay.append(ls_time)
                     else: 
                         ngay=group_post(ngay)
@@ -89,6 +90,7 @@ def home():
                         ngay=[]
                         ls_time['KhoiLuong']=i[1]
                         ls_time['TenNhan']=i[2]
+                        ls_time["AnhRac"]=i[4]
                         ngay.append(ls_time)
                         valuetime=tm
                        
