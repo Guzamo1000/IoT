@@ -67,14 +67,14 @@ def home():
             db=cur.fetchall()
             if db is not None:
                 dir_time=[]
-                valuetime=db[0][0].strftime("%Y-%d-%m")
-                # print(f"valuetime: {valuetime}")
+                valuetime=db[0][0].strftime("%Y-%m-%d")
+                print(f"valuetime: {valuetime}")
                 
                 ngay=[]
                 for i in db:
                     ls_time={}
                     all_day={}
-                    tm=i[0].strftime("%Y-%d-%m")
+                    tm=i[0].strftime("%Y-%m-%d")
                     print(type(i))
                     if tm==valuetime:
                         
