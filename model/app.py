@@ -56,7 +56,8 @@ def home():
                     vt['Khoangrac']=lskhuvuc
                     print(lskhuvuc)
                 else:
-                    vt['Khoangrac']="None"
+                    lskhuvuc=group_get(lskhuvuc)
+                    vt['Khoangrac']=lskhuvuc
                 dict_vitri.append(vt)
             # print(lskhuvuc)
             # lskhuvuc=set(lskhuvuc)
