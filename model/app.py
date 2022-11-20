@@ -17,6 +17,10 @@ web=Blueprint('web',__name__)
 @web.route("/home", methods=['GET','POST'])
 def home():
     if request.method=='GET':
+        """
+        Get all information in all trash
+        
+        """
         cur=mysql.get_db().cursor()
         cur.execute("select Id_thungrac,ViTriThungRac from thungrac")
         listvitri=cur.fetchall()
