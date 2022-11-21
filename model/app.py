@@ -150,12 +150,14 @@ def push_data():
             # Parent Directory path
             parent_dir = os.getcwd()
             # Path
-            path = parent_dir+"\\"+"static"+"\\"+"images"+"\\"+directory
+            # path = parent_dir+"\\"+"static"+"\\"+"images"+"\\"+directory
+            path="..\my-app\src\images"
             try:
                 os.mkdir(path)
             except:
                 print('Folder exist!')
-            print(f"TenNhan : {TenNhan}")
+            print(f"parent_dir: {parent_dir}")
+            # print(f"TenNhan : {TenNhan}")
             dict_label={1:"box_cardboard_paper",2:"glass_metal_plastic",3:"organic",4:"other"}
             TenNhan=dict_label[TenNhan]
             # Process base64 string
@@ -164,9 +166,11 @@ def push_data():
             for specialChar in specialChars:
                 filename = filename.replace(specialChar, '')
 
-            url_save_to_db = "static\\images\\"+directory+"\\"+filename+".jpg"
+            url_save_to_db = filename+".jpg"
+            print(f"url_save_to_db: {url_save_to_db}")
             url_img = path+"\\"+filename
             url_img += '.jpg'
+            print(f"url_img: {url_img}")
             with open(url_img, "wb") as f:
                 f.write(base64.b64decode(AnhRac.encode('utf-8')))
             cur=mysql.get_db().cursor()
@@ -182,3 +186,21 @@ def push_data():
         except Exception as e:
             print(e)
             return jsonify({"status":"failed","msg":str(e)})
+
+@web.route("/get_img",methods=['POST'])
+def get_img():
+    if request.method=='POST':
+        start_time=request.form['start_time']
+        end_time=request.form['end_time']
+        location=request.form['location']
+        cur=mysql.get_db().cursor()
+        if start_time and end_time and start_time<end_time:
+            cur.execute(f"SELECT khoangrac.ID_khoangrac,AnhRac,TenNhan FROM iot.ractrongkhoang, khoangrac,thungrac where thungrac.ID_Thungrac='{location}' and  thungrac.ID_thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>=NgayDoRac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by khoangrac.ID_khoangrac")
+            img=cur.fetchall()
+            print(f"img: {img}")
+            if img is not None:
+                new_img=group_img(img)
+                return jsonify({"status":"success","data":new_img})
+            else: return jsonify({"status":"failed","msg":"database None"})
+        else: return jsonify({"status":"failed","msg":"validate time"})
+                
