@@ -37,7 +37,7 @@ classes = ['Box_cardboard_paper',  'glass_metal_plastic', 'organic','other']
 #   /cam-hi.jpg
 #   /cam-mid.jpg
 
-url='http://192.168.201.117/cam-lo.jpg'
+url='http://192.168.31.106/cam-lo.jpg'
 def save_img(filename,img):
   cv2.imwrite(filename,img)
 # cam=cv2.VideoCapture(0)
@@ -75,11 +75,13 @@ while True:
         cv2.putText(frame, s , (x+5, y+15),cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
         cv2.putText(frame, s2, (x+35, y+45),cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
         print(f"predict class: {predicted_class}")
+        # label=[]
+        # if predicted_class is not None:
         print(f"img2: {img2}")
-        camera_run(1,img2,0)
+        camera_run(1,img2,int(predicted_class))
       # camera_run(1,img2,1)
 
-      # time.sleep(0.5)  
+      time.sleep(0.5)  
     cv2.imshow("frame", frame)
     if cv2.waitKey(10) & 0xFF == ord('q'):
             break
