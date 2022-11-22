@@ -151,14 +151,15 @@ def push_data():
             parent_dir = os.getcwd()
             # Path
             # path = parent_dir+"\\"+"static"+"\\"+"images"+"\\"+directory
-            path="..\my-app\src\images"
+            path="..\\FE\my-app\src\images"
+            # FE\my-app\src\images
             try:
                 os.mkdir(path)
             except:
                 print('Folder exist!')
             print(f"parent_dir: {parent_dir}")
             # print(f"TenNhan : {TenNhan}")
-            dict_label={1:"box_cardboard_paper",2:"glass_metal_plastic",3:"organic",4:"other"}
+            dict_label={0:"box_cardboard_paper",1:"glass_metal_plastic",2:"organic",3:"other"}
             TenNhan=dict_label[TenNhan]
             # Process base64 string
             filename = str(datetime.now())
@@ -194,7 +195,7 @@ def get_img():
         end_time=request.form['end_time']
         location=request.form['location']
         cur=mysql.get_db().cursor()
-        if start_time and end_time and start_time<end_time:
+        if start_time and end_time and start_time<=end_time:
             cur.execute(f"SELECT khoangrac.ID_khoangrac,AnhRac,TenNhan FROM iot.ractrongkhoang, khoangrac,thungrac where thungrac.ID_Thungrac='{location}' and  thungrac.ID_thungrac=khoangrac.ID_Thungrac and khoangrac.ID_khoangrac=ractrongkhoang.ID_khoangrac and NgayRacVao>=NgayDoRac and NgayRacVao>='{start_time}' and NgayRacVao<='{end_time}' order by khoangrac.ID_khoangrac")
             img=cur.fetchall()
             print(f"img: {img}")
