@@ -47,16 +47,9 @@ while True:
       for (x,y,w,h) in boxes:
           img=frame[y+5:h+5, x+15:w+10]
           img = cv2.resize(img,(256,256))
-          label='organic'
-          path='/home/hauuu/Desktop/IoT/detect/dataset/'+label
-          time_img=str(datetime.now())
-          file_name=path+"/"+time_img+".jpg"
-          print(file_name)
-
-          cv2.imwrite(file_name,img)
-          time.sleep(1)
+          
           # schedule.every(2).seconds.do(save_img,filename=file_name,img=img)
-          # img = load_img(img_path, target_size=(224, 224))
+        #   img = load_img(img_path, target_size=(224, 224))
         #   img_array = img_to_array(img)
           
         #   img_array = np.expand_dims(img_array, axis=0)
@@ -89,7 +82,7 @@ while True:
           #     # schedule.every(10).minutes.do(up_data(id_cam,face2,label,device))
           # print(label)
 
-          up_data(5,face,label)
+        #   up_data(5,face,label)
           # print(data)
 
           # filename = str(datetime.now())+'.jpg'
@@ -97,7 +90,7 @@ while True:
           #     f.write(base64.b64decode(data['image'].encode('utf-8')))
           cv2.rectangle(frame, (x+10,y+5), (w+10,h+5), (255,0,0), 2)
           # cv2.putText(frame, s , (x+5, y-15),cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0,255,0), 2)
-          # camera_run(1,img,1)
+          camera_run(1,img,1)
 
       
     cv2.imshow("frame", frame)
