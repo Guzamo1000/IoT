@@ -166,7 +166,8 @@ def push_data():
             specialChars = "!#$%^&*():.- "
             for specialChar in specialChars:
                 filename = filename.replace(specialChar, '')
-
+            fake_NgayRacVao='2022-11-30'
+            NgayRacVao=fake_NgayRacVao
             url_save_to_db = filename+".jpg"
             print(f"url_save_to_db: {url_save_to_db}")
             url_img = path+"\\"+filename
